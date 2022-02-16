@@ -143,9 +143,7 @@ class NumberInterpretIn11Till16CalcSys(NumberInterpret):
 
 
 if __name__ == "__main__":
-    a = NumberInterpretIn11Till16CalcSys(50, 11, 10)
+    a = NumberInterpretIn11Till16CalcSys(7467, 10, 16)
 
     print(a.change_calc_sys())
-    # symbol_dict = {10: "A", 11: "B", 12: "C", 13: "D", 14: "E", 15: "F"}
-    # for key, value in enumerate(symbol_dict):
-    #     print(key, value)
+
