@@ -4,7 +4,7 @@ from typing import Union
 
 class NumberInterpretFactoryMethod(ABC):
     """
-    Абстракиный метод инициализации интерпретаторов чисел
+    Абстракиный класс инициализации интерпретаторов чисел
     """
 
     @abstractmethod
@@ -26,7 +26,7 @@ class From2To10CalcSysNumberInterpretFactoryMethod(NumberInterpretFactoryMethod)
 
 class From2To16CalcSysNumberInterpretFactoryMethod(NumberInterpretFactoryMethod):
     """
-    Инициализация интерпретатора чисел между системами от 2 до 16ричной.
+    Инициализация интерпретатора чисел между системами от 2-ичной до 16-ричной.
     """
 
     def get_number_interpret(self):
@@ -39,12 +39,13 @@ class From2To16CalcSysNumberInterpretFactoryMethod(NumberInterpretFactoryMethod)
 class NumberInterpret(ABC):
     """Абстрактный класс - интерфейс конечного интерпретатора, где д.б.
     два метода: сначала перевод в десятичную систему и потом в любую другую"""
+
     @abstractmethod
     def value_in_10_calc_sys(self) -> int:
         pass
 
     @abstractmethod
-    def change_calc_sys(self, *args, **kwargs) -> int:
+    def change_calc_sys(self, *args, **kwargs) -> Union[int, str]:
         pass
 
 
@@ -87,17 +88,31 @@ class NumberInterpretIn2Till10CalcSys(NumberInterpret):
 
 class NumberInterpretIn11Till16CalcSys(NumberInterpret):
     """
-    Перевод числа в системы исчисления с 11 по 16-ую
+    Перевод числа в системах исчисления от двоичной по 16-ричной, туда и обратно
     """
     symbol_dict = {10: "A", 11: "B", 12: "C", 13: "D", 14: "E", 15: "F"}
+    symbol_dict_rev = {"A": 10, "B": 11, "C": 12, "D": 13, "E": 14, "F": 15}
 
     def __init__(self, value: Union[int, str], sys: int, new_sys: int):
         self.value = value
         self.sys = sys
         self.new_sys = new_sys
 
+        if not isinstance(value, (int, str)):
+            raise TypeError("Число принимается только виде целого числа или строки")
+        if not isinstance(sys, int):
+            raise TypeError("Текущая система исчисления принимается только в виде целого числа")
+        if not isinstance(new_sys, int):
+            raise TypeError("Требуемая система исчисления принимается только в виде целого числа")
+        if not 2 <= sys <= 16:
+            raise ValueError("Работает только от 2-ичной до 16-ричной системы")
+        if not 2 <= new_sys <= 16:
+            raise ValueError("Работает только от 2-ичной до 16-ричной системы")
+        if type(value) is str and sys <= 10:
+            raise ValueError("Похоже вы ошиблись с текущей системой исчисления")
+
     def value_in_10_calc_sys(self) -> int:
-        d = self.symbol_dict
+        d = self.symbol_dict_rev
         if self.sys == 10:
             value_in_10 = self.value
             return value_in_10
@@ -143,9 +158,6 @@ class NumberInterpretIn11Till16CalcSys(NumberInterpret):
 
 
 if __name__ == "__main__":
-    a = NumberInterpretIn11Till16CalcSys(50, 11, 10)
+    a = NumberInterpretIn11Till16CalcSys(101, 2, 15)
 
     print(a.change_calc_sys())
-    # symbol_dict = {10: "A", 11: "B", 12: "C", 13: "D", 14: "E", 15: "F"}
-    # for key, value in enumerate(symbol_dict):
-    #     print(key, value)
